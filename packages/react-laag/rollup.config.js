@@ -1,22 +1,12 @@
 const path = require("path");
 const { terser } = require("rollup-plugin-terser");
-const { DEFAULT_EXTENSIONS: DEFAULT_BABEL_EXTENSIONS } = require("@babel/core");
 const commonjs = require("@rollup/plugin-commonjs");
 const replace = require("@rollup/plugin-replace");
-const { default: resolve } = require("@rollup/plugin-node-resolve");
+const resolve = require("@rollup/plugin-node-resolve").default;
 const sourceMaps = require("rollup-plugin-sourcemaps");
-const typescript = require("rollup-plugin-typescript2");
+const typescript = require("@rollup/plugin-typescript");
 const { babel } = require("@rollup/plugin-babel");
-const ts = require("typescript");
-
-const tsConfigPath = path.join(__dirname, "tsconfig.json");
-const tsconfigJSON = ts.readConfigFile(tsConfigPath, ts.sys.readFile).config;
-
-const tsCompilerOptions = ts.parseJsonConfigFileContent(
-  tsconfigJSON,
-  ts.sys,
-  "./"
-).options;
+const { DEFAULT_EXTENSIONS: DEFAULT_BABEL_EXTENSIONS } = require("@babel/core");
 
 const external = id => !id.startsWith(".") && !path.isAbsolute(id);
 
@@ -33,7 +23,7 @@ const getOutputName = (format, minify, env) =>
 
 const outputBase = {
   freeze: false,
-  esModule: Boolean(tsCompilerOptions?.esModuleInterop),
+  esModule: true,
   name: "react-laag",
   sourcemap: true,
   globals: { react: "React" },
@@ -43,12 +33,7 @@ const outputBase = {
 /** @type {import("rollup").RollupOptions } */
 const options = {
   input: path.join(__dirname, "src", "index.ts"),
-
-  external: id => (id.startsWith("regenerator-runtime") ? false : external(id)),
-
-  treeshake: {
-    propertyReadSideEffects: false
-  },
+  external,
 
   output: [
     {
@@ -85,45 +70,17 @@ const options = {
     resolve({
       mainFields: ["module", "main", "browser"]
     }),
-    commonjs({
-      include: /\/regenerator-runtime\//
-    }),
+    commonjs(),
     typescript({
-      typescript: ts,
-      tsconfig: tsConfigPath,
-      tsconfigDefaults: {
-        exclude: [
-          "**/*.spec.ts",
-          "**/*.test.ts",
-          "**/*.spec.tsx",
-          "**/*.test.tsx",
-          "node_modules",
-          "dist"
-        ],
-        compilerOptions: {
-          sourceMap: true,
-          declaration: true,
-          jsx: "react"
-        }
-      },
-      tsconfigOverride: {
-        compilerOptions: {
-          target: "esnext"
-        }
-      },
-      check: true,
-      useTsconfigDeclarationDir: Boolean(tsCompilerOptions?.declarationDir)
+      tsconfig: path.resolve(__dirname, "tsconfig.json"),
+      sourceMap: true,
+      declaration: true,
+      declarationDir: "dist/types"
     }),
     babel({
-      extensions: [...DEFAULT_BABEL_EXTENSIONS, "ts", "tsx"],
+      extensions: [...DEFAULT_BABEL_EXTENSIONS, ".ts", ".tsx"],
       exclude: "node_modules/**",
-      plugins: [
-        "babel-plugin-macros",
-        "babel-plugin-annotate-pure-calls",
-        "babel-plugin-dev-expression",
-        ["babel-plugin-polyfill-regenerator", { method: "usage-pure" }],
-        ["@babel/plugin-proposal-class-properties", { loose: true }]
-      ],
+      babelHelpers: "bundled",
       presets: [
         [
           "@babel/preset-env",
@@ -132,9 +89,16 @@ const options = {
             loose: true,
             targets: "last 3 versions, IE 11, not dead"
           }
-        ]
+        ],
+        "@babel/preset-react"
       ],
-      babelHelpers: "bundled"
+      plugins: [
+        "babel-plugin-macros",
+        "babel-plugin-annotate-pure-calls",
+        "babel-plugin-dev-expression",
+        ["babel-plugin-polyfill-regenerator", { method: "usage-pure" }],
+        ["@babel/plugin-proposal-class-properties", { loose: true }]
+      ]
     }),
     sourceMaps()
   ]

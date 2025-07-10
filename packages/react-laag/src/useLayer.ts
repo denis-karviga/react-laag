@@ -28,6 +28,7 @@ import { Placements } from "./Placements";
 import { SubjectsBounds } from "./SubjectsBounds";
 import { useLastState } from "./hooks";
 import { isSet, mergeRefs } from "./util";
+import { IBounds } from "./Bounds";
 
 let GLOBAL_CONTAINER: HTMLElement | null = null;
 
@@ -69,7 +70,7 @@ export type UseLayerProps = {
   layerProps: LayerProps;
   arrowProps: UseLayerArrowProps;
   layerSide: LayerSide;
-  triggerBounds: ClientRect | null;
+  triggerBounds: DOMRect | ClientRect | IBounds | null;
 };
 
 type State = {

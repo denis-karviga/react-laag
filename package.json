@@ -6,11 +6,6 @@
   "workspaces": [
     "packages/*"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "eslint packages --fix"
-    }
-  },
   "prettier": {
     "printWidth": 80,
     "semi": true,

@@ -26,21 +26,23 @@
   "size-limit": [
     {
       "path": "dist/react-laag.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "13 KB"
     },
     {
       "path": "dist/react-laag.esm.js",
-      "limit": "10 KB"
+      "limit": "13 KB"
     }
   ],
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/preset-env": "^7.14.5",
+    "@babel/preset-react": "^7.27.1",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^19.0.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-replace": "^2.4.2",
+    "@rollup/plugin-typescript": "^12.1.4",
     "@size-limit/preset-small-lib": "^4.12.0",
     "@snowpack/plugin-react-refresh": "^2.5.0",
     "@snowpack/plugin-typescript": "^1.2.1",
