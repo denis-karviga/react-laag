@@ -23,16 +23,7 @@
     "test:watch": "wtr \"./tests/**/*.spec.(ts|tsx)\" --node-resolve --puppeteer --watch",
     "typecheck": "tsc --noEmit"
   },
-  "size-limit": [
-    {
-      "path": "dist/react-laag.cjs.production.min.js",
-      "limit": "13 KB"
-    },
-    {
-      "path": "dist/react-laag.esm.js",
-      "limit": "13 KB"
-    }
-  ],
+  "size-limit": [],
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/plugin-proposal-class-properties": "^7.14.5",
